@@ -1,64 +1,51 @@
-# Custom Classic Sidebars (`wp-custom-sidebars-plugin`)
+# WP Custom Sidebars Plugin
 
-![WordPress Plugin](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)
-![PHP Support](https://img.shields.io/badge/PHP-7.4%20%7C%208.0%20%7C%208.1%20%7C%208.2%20%7C%208.3-777BB4.svg)
-![License](https://img.shields.io/badge/License-GPLv2-green.svg)
+[![WordPress Plugin](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)](https://wordpress.org/)
+[![PHP Support](https://img.shields.io/badge/PHP-7.4%20%7C%208.0%20%7C%208.1%20%7C%208.2%20%7C%208.3-777BB4.svg)](https://php.net/)
+[![License](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-![Custom Sidebars Interface](https://github.com/user-attachments/assets/c60088f4-2dcf-4f38-9329-440c0efaefa0)
+Allows WordPress administrators to create unlimited dynamic widget sidebars and output them anywhere using shortcodes or PHP.
 
-Легкий и удобный WordPress плагин для динамического создания неограниченного количества сайдбаров (виджетов) в админ-панели и их вывода в любой точке сайта с помощью шорткода или PHP.
+## Requirements
 
----
+| Component | Minimum | Tested |
+|-----------|---------|--------|
+| **WordPress** | 5.0 | 5.0 – 6.7 |
+| **PHP** | 7.4 | 7.4, 8.0, 8.1, 8.2, 8.3 |
 
-## 🚀 Возможности
+## Features
 
-- ➕ **Динамическое добавление сайдбаров:** Создавайте новые области виджетов прямо на странице **Внешний вид → Виджеты**.
-- 🗑️ **AJAX-удаление:** Быстрое удаление ненужных сайдбаров без перезагрузки страницы.
-- 🧩 **Шорткод `[custom_sidebars]`:** Вывод любого созданного сайдбара в записях, страницах или конструкторах.
-- 💻 **PHP API:** Простой вызов в шаблонах темы.
-- 📦 **Поддержка Composer (`wordpress-plugin`):** Легкая интеграция в сборки на базе Roots Bedrock или стандартного Composer.
+- **Dynamic Sidebars:** Create new widget areas directly from the Widgets screen.
+- **Shortcode Output:** Display any sidebar using `[custom_sidebars id="..."]`.
+- **AJAX Management:** Easily remove sidebar areas without page reloads.
 
----
+## Installation
 
-## 📥 Установка
+### Via Composer (VCS Repository)
+Add the repository to your `composer.json` and require the package:
 
-### Через Composer (рекомендуется)
 ```bash
 composer config repositories.tikhomirov-wp-custom-sidebars-plugin git https://github.com/tikhomirov/wp-custom-sidebars-plugin.git
 composer require tikhomirov/wp-custom-sidebars-plugin
 ```
 
-### Вручную
-1. Скачайте ZIP-архив репозитория.
-2. Распакуйте в директорию `/wp-content/plugins/wp-custom-sidebars-plugin/`.
-3. Активируйте плагин в админ-панели **Плагины → Установленные**.
+### Manual Installation
+1. Download the latest ZIP release.
+2. Upload the plugin folder to the `/wp-content/plugins/` directory.
+3. Activate the plugin through the 'Plugins' menu in WordPress.
 
 ---
 
-## 💻 Использование
+## Русский
 
-### 1. Создание сайдбара
-1. Перейдите в **Внешний вид → Виджеты**.
-2. Внизу блока сайдбаров введите название нового сайдбара и нажмите **Add Sidebar**.
-3. Добавьте в созданный сайдбар нужные виджеты.
+Позволяет администраторам WordPress создавать неограниченное количество динамических сайдбаров и выводить их в любой точке сайта с помощью шорткодов или PHP.
 
-### 2. Вывод через Шорткод
-```html
-[custom_sidebars id="my-sidebar-slug"]
-```
+### Совместимость
+- **WordPress:** от 5.0 и выше
+- **PHP:** от 7.4 до 8.3
 
-### 3. Вывод через PHP в шаблоне темы
-```php
-<?php
-if (function_exists('dynamic_sidebar')) {
-    dynamic_sidebar('my-sidebar-slug');
-}
-?>
-```
+### Возможности
+- Динамическое создание и AJAX-удаление сайдбаров в админ-панели.
+- Вывод через шорткод или PHP функцию.
 
----
-
-## 🛠️ Требования
-
-- **WordPress:** 5.0 или выше
-- **PHP:** 7.4, 8.0, 8.1, 8.2, 8.3
+**Установка:** подключите через Composer (VCS) или скачайте архив и активируйте в панели управления WordPress.

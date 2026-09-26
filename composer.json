@@ -1,9 +1,8 @@
 {
-  "name": "rwsite/wp-custom-sidebars-plugin",
+  "name": "tikhomirov/wp-custom-sidebars-plugin",
   "description": "WordPress plugin for creating custom dynamic sidebars and use anywhere with shortcodes.",
-  "minimum-stability": "stable",
-  "license": "GPL-3.0-or-later",
   "type": "wordpress-plugin",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Aleksei Tikhomirov",
@@ -11,5 +10,6 @@
     }
   ],
   "require": {
+    "php": ">=7.4"
   }
 }

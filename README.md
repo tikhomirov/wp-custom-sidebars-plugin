@@ -24,6 +24,7 @@
 
 ### Через Composer (рекомендуется)
 ```bash
+composer config repositories.tikhomirov-wp-custom-sidebars-plugin git https://github.com/tikhomirov/wp-custom-sidebars-plugin.git
 composer require tikhomirov/wp-custom-sidebars-plugin
 ```
 

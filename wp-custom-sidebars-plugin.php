@@ -12,16 +12,13 @@
  *
  * Text Domain: wp-custom-sidebars-plugin
  * Domain Path: /languages
- *
  */
-
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
 final class CustomSidebars
 {
-
     /**
      * @var CustomSidebars The single instance of the class
      */
@@ -64,6 +61,7 @@ final class CustomSidebars
         if (is_null(self::$_instance)) {
             self::$_instance = new self();
         }
+
         return self::$_instance;
     }
 
@@ -74,14 +72,13 @@ final class CustomSidebars
      */
     public function load_plugin_textdomain()
     {
-        load_plugin_textdomain('wp-custom-sidebars-plugin', false, dirname(plugin_basename(__FILE__)).'/languages/');
+        load_plugin_textdomain('wp-custom-sidebars-plugin', false, dirname(plugin_basename(__FILE__)) . '/languages/');
         $this->title = __('Custom Widget Area', 'wp-custom-sidebars-plugin');
     }
 
     /**
      * Register/queue scripts.
      *
-     * @access public
      * @return void
      */
     public function load_scripts_styles()
@@ -90,33 +87,40 @@ final class CustomSidebars
         add_action('load-widgets.php', [$this, 'add_sidebar_area'], 100);
 
         wp_enqueue_script('jquery');
-        wp_enqueue_script('custom-sidebars', $this->plugin_url().'/custom-sidebars.js', ['jquery'], $this->version,
-            true);
+        wp_enqueue_script(
+            'custom-sidebars',
+            $this->plugin_url() . '/custom-sidebars.js',
+            ['jquery'],
+            $this->version,
+            true,
+        );
 
         wp_localize_script(
             'custom-sidebars',
             'objectL10n',
             [
                 'shortcode'           => __('Shortcode', 'wp-custom-sidebars-plugin'),
-                'delete_sidebar_area' => __('Are you sure you want to delete this sidebar?',
-                    'wp-custom-sidebars-plugin'),
-            ]
+                'delete_sidebar_area' => __(
+                    'Are you sure you want to delete this sidebar?',
+                    'wp-custom-sidebars-plugin',
+                ),
+            ],
         );
 
-        wp_enqueue_style('custom-sidebars', $this->plugin_url().'/custom-sidebars.css', '', $this->version, 'screen');
+        wp_enqueue_style('custom-sidebars', $this->plugin_url() . '/custom-sidebars.css', '', $this->version, 'screen');
     }
 
     /**
      * Get the plugin url.
      *
-     * @access public
      * @return string
      */
     public function plugin_url()
     {
-        if (!empty($this->plugin_url)) {
+        if (! empty($this->plugin_url)) {
             return $this->plugin_url;
         }
+
         return $this->plugin_url = untrailingslashit(plugins_url('/', __FILE__));
     }
 
@@ -133,23 +137,23 @@ final class CustomSidebars
         <script type="text/html" id="tmpl-add-widget">
             <div class="custom-sidebar-add wrap">
                 <?php
-                if (false === version_compare($wp_version, '3.7.9', '>')) : ?>
+                if (version_compare($wp_version, '3.7.9', '>') === false) { ?>
                     <div class="sidebar-name">
                         <h3><?php
                             echo $this->title; ?></h3>
                     </div>
                 <?php
-                endif; ?>
+                } ?>
 
                 <form class="add-widget" method="post">
 
                     <?php
-                    if (true === version_compare($wp_version, '3.7.9', '>')) : ?>
+                    if (version_compare($wp_version, '3.7.9', '>') === true) { ?>
                         <div class="sidebar-name">
                             <h3><?php echo $this->title; ?></h3>
                         </div>
                     <?php
-                    endif; ?>
+                    } ?>
 
                     <input type="text" name="add-widget" value=""
                            placeholder="<?php _e('Enter name of the new widget area here',
@@ -173,21 +177,21 @@ final class CustomSidebars
      */
     public function add_sidebar_area()
     {
-        if (!empty($_POST['add-widget'])) {
+        if (! empty($_POST['add-widget'])) {
             $this->sidebars = get_option($this->stored, []);
             $name = $this->get_name($_POST['add-widget']);
 
             $this->sidebars[sanitize_title_with_dashes($name)] = $name;
             update_option($this->stored, $this->sidebars);
             wp_redirect(admin_url('widgets.php'));
-            die();
+            exit();
         }
     }
 
     /**
      * Check user entered widget area name and manage conflicts.
      *
-     * @param  string  $name  User entered name
+     * @param  string $name User entered name
      * @return string Processed name
      */
     public function get_name($name)
@@ -197,25 +201,25 @@ final class CustomSidebars
             return $name;
         }
 
-        $taken = array();
+        $taken = [];
 
         foreach ($GLOBALS['wp_registered_sidebars'] as $sidebar) {
             $taken[] = $sidebar['name'];
         }
 
         if (empty($this->sidebars)) {
-            $this->sidebars = array();
+            $this->sidebars = [];
         }
         $taken = array_merge($taken, $this->sidebars);
 
         if (in_array($name, $taken)) {
-            $counter = substr($name, -1);
+            $counter = mb_substr($name, -1);
             $new_name = '';
 
-            if (!is_numeric($counter)) {
-                $new_name = $name.' 1';
+            if (! is_numeric($counter)) {
+                $new_name = $name . ' 1';
             } else {
-                $new_name = substr($name, 0, -1).((int) $counter + 1);
+                $new_name = mb_substr($name, 0, -1) . ((int) $counter + 1);
             }
 
             $name = $this->get_name($new_name);
@@ -233,7 +237,7 @@ final class CustomSidebars
     {
         check_ajax_referer('scs-delete-nonce');
 
-        if (!empty($_POST['name'])) {
+        if (! empty($_POST['name'])) {
             $name = sanitize_title_with_dashes(stripslashes($_POST['name']));
             $this->sidebars = get_option($this->stored, []);
 
@@ -244,13 +248,13 @@ final class CustomSidebars
                 echo 'sidebar-deleted';
             }
         }
-        die();
+        exit();
     }
 
     /**
      * Shortcode handler.
      *
-     * @param  array  $atts  Array of attributes
+     * @param  array  $atts Array of attributes
      * @return string $output returns the modified html string
      */
     public function sidebar_shortcode($atts)
@@ -263,12 +267,12 @@ final class CustomSidebars
 
         $output = '';
 
-        if (is_active_sidebar($atts['id']) && !is_admin()) {
+        if (is_active_sidebar($atts['id']) && ! is_admin()) {
             ob_start();
 
             do_action('custom_sidebars_before', $atts['id']);
 
-            echo "<section id='".esc_attr($atts['id'])."' class='stag-custom-widget-area ".esc_attr($atts['class'])."'>";
+            echo "<section id='" . esc_attr($atts['id']) . "' class='stag-custom-widget-area " . esc_attr($atts['class']) . "'>";
             dynamic_sidebar($atts['id']);
             echo '</section>';
 
@@ -285,12 +289,14 @@ final class CustomSidebars
      *
      * Inject all custom sidebar areas created on site under export data of "Widget Importer and Exporter".
      *
-     * @param  array  $sidebars  An array containing sidebars' widget data.
+     * @param  array $sidebars An array containing sidebars' widget data.
      * @return array $sidebars Modified array, adds custom array key set during export.
-     * @since 1.0.6
-     * @uses Widget_Importer_Exporter
-     * @link https://wordpress.org/plugins/widget-importer-exporter
      *
+     * @since 1.0.6
+     *
+     * @uses Widget_Importer_Exporter
+     *
+     * @link https://wordpress.org/plugins/widget-importer-exporter
      */
     public function export_data($sidebars)
     {
@@ -307,16 +313,19 @@ final class CustomSidebars
     /**
      * Delete custom array key before 'Widget Importer & Exporter' import.
      *
-     * @param  array  $results  An array containing sidebars' widget data.
+     * @param  array $results An array containing sidebars' widget data.
      * @return array $results Modified array, deletes custom array key set during export.
-     * @since 1.0.6
-     * @uses Widget_Importer_Exporter
-     * @link https://wordpress.org/plugins/widget-importer-exporter
      *
+     * @since 1.0.6
+     *
+     * @uses Widget_Importer_Exporter
+     *
+     * @link https://wordpress.org/plugins/widget-importer-exporter
      */
     public function reset_custom_key($results)
     {
         unset($results['stag-custom-sidebars-areas']);
+
         return $results;
     }
 
@@ -326,10 +335,10 @@ final class CustomSidebars
      * Filter widget data before widgets import. Deletes the custom key set during widget file export.
      * Also register new custom widgets areas.
      *
-     * @param  object  $data  Contains widget import data.
+     * @param  object $data Contains widget import data.
      * @return array  $data Modified widget import data.
-     * @global $wp_registered_sidebars
      *
+     * @global $wp_registered_sidebars
      */
     public function before_wie_import($data)
     {
@@ -346,7 +355,7 @@ final class CustomSidebars
         // Loop through each imported custom sidebar area and prepare it
         // to be added in new custom sidebar areas.
         foreach ($custom_sidebars as $sidebar_id => $title) {
-            if (!isset($wp_registered_sidebars[$sidebar_id])) {
+            if (! isset($wp_registered_sidebars[$sidebar_id])) {
                 $sidebars[$sidebar_id] = $title;
             }
         }
@@ -361,7 +370,6 @@ final class CustomSidebars
     /**
      * Register sidebars.
      *
-     * @access public
      * @return void
      */
     public function register_custom_sidebars()
@@ -371,12 +379,12 @@ final class CustomSidebars
 
         $args = apply_filters(
             'custom_sidebars_widget_args',
-            array(
+            [
                 'before_widget' => '<aside id="%1$s" class="widget %2$s">',
                 'after_widget'  => '</aside>',
                 'before_title'  => '<h3 class="widgettitle">',
                 'after_title'   => '</h3>',
-            )
+            ],
         );
 
         if (is_array($sidebars)) {
@@ -388,7 +396,7 @@ final class CustomSidebars
                 $args['id'] = $sidebar;
                 $args['class'] = 'stag-custom';
 
-                register_sidebar(apply_filters('scs_widget_args_'.$sidebar, $args));
+                register_sidebar(apply_filters('scs_widget_args_' . $sidebar, $args));
             }
         }
     }
@@ -397,6 +405,7 @@ final class CustomSidebars
      * Tweak style for Widget customizer.
      *
      * @return void
+     *
      * @since 1.0.7.
      */
     public function customize_controls_print_scripts()
@@ -410,22 +419,21 @@ final class CustomSidebars
         // Get custom sidebar keys.
         $sidebars = array_keys($sidebars);
 
-        if (!is_array($sidebars)) {
+        if (! is_array($sidebars)) {
             return;
         }
 
         echo "<style>\n";
-        foreach ($sidebars as $sidebar_id) :
-            echo '#accordion-section-sidebar-widgets-'.esc_attr($sidebar_id)." { display: list-item !important; height: auto !important; }\n";
-            echo '#accordion-section-sidebar-widgets-'.esc_attr($sidebar_id)." .widget-top { opacity: 1 !important; }\n";
-        endforeach;
+        foreach ($sidebars as $sidebar_id) {
+            echo '#accordion-section-sidebar-widgets-' . esc_attr($sidebar_id) . " { display: list-item !important; height: auto !important; }\n";
+            echo '#accordion-section-sidebar-widgets-' . esc_attr($sidebar_id) . " .widget-top { opacity: 1 !important; }\n";
+        }
         echo "</style>\n";
     }
 }
 
 /**
  * Returns the main instance of SCS to prevent the need to use globals.
- * @return CustomSidebars|null
  */
 function custom_sidebars(): ?CustomSidebars
 {
